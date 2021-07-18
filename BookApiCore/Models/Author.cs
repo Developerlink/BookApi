@@ -14,14 +14,15 @@ namespace BookApiCore.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(100, ErrorMessage ="First Name cannot be more than 100 characters")]
+        [MaxLength(100, ErrorMessage = "First Name cannot be more than 100 characters")]
         public string FirstName { get; set; }
 
         [Required]
-        [MaxLength(200, ErrorMessage ="First Name cannot be more than 200 characters")]
+        [MaxLength(200, ErrorMessage = "First Name cannot be more than 200 characters")]
         public string LastName { get; set; }
 
         public virtual Country Country { get; set; }
         public virtual ICollection<BookAuthor> BookAuthors { get; set; }
+
     }
 }

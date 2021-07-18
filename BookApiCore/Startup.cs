@@ -34,7 +34,11 @@ namespace BookApiCore
             services.AddDbContext<BookDbContext>(cnn => cnn.UseSqlServer(connectionString));
 
             services.AddScoped<ICountryRepository, CountryRepository>()
-                .AddScoped<ICategoryRepository, CategoryRepository>();
+                .AddScoped<ICategoryRepository, CategoryRepository>()
+                .AddScoped<IReviewerRepository, ReviewerRepository>()
+                .AddScoped<IReviewRepository, ReviewRepository>()
+                .AddScoped<IAuthorRepository, AuthorRepository>()
+                .AddScoped<IBookRepository, BookRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
