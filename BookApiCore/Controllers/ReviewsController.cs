@@ -14,10 +14,12 @@ namespace BookApiCore.Controllers
     public class ReviewsController : Controller
     {
         private IReviewRepository _reviewRepository;
+        private IBookRepository _bookRepository;
 
-        public ReviewsController(IReviewRepository reviewRepository)
+        public ReviewsController(IReviewRepository reviewRepository, IBookRepository bookRepository)
         {
             _reviewRepository = reviewRepository;
+            _bookRepository = bookRepository;
         }
 
         [HttpGet]
@@ -83,7 +85,10 @@ namespace BookApiCore.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewDto>))]
         public IActionResult GetReviewsOfABook(int bookId)
         {
-            // If book exist
+            if(!_bookRepository.BookExists(bookId))
+            {
+                return NotFound();
+            }
 
             var reviews = _reviewRepository.GetReviewsOfABook(bookId);
 

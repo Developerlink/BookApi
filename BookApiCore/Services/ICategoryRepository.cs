@@ -13,5 +13,7 @@ namespace BookApiCore.Services
         Category GetCategory(int categoryId);
         ICollection<Category> GetCategoriesForABook(int bookId);
         ICollection<Book> GetBooksForACategory(int categoryId);
+        bool IsDuplicateCategoryName(int categoryId, string categoryName);
+
     }
 }

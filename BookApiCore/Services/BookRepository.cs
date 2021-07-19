@@ -54,9 +54,9 @@ namespace BookApiCore.Services
 
         public bool IsDuplicateIsbn(int bookId, string bookIsbn)
         {
-            var result = _bookDbContext.Books.Where(b => b.Isbn.Trim().ToUpper() == bookIsbn.Trim().ToUpper() && b.Id != bookId);
+            var book = _bookDbContext.Books.Where(b => b.Isbn.Trim().ToUpper() == bookIsbn.Trim().ToUpper() && b.Id != bookId).FirstOrDefault();
 
-            return result == null ? false : true;  
+            return book == null ? false : true;  
             //return _bookDbContext.Books.Where(b => b.Id == bookId).Any(b => b.Isbn == bookIsbn);
         }
     }

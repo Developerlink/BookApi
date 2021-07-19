@@ -41,5 +41,12 @@ namespace BookApiCore.Services
             // Remember that the author class has a country property.
             return _countryContext.Authors.Where(a => a.Id == authorId).Select(a => a.Country).FirstOrDefault();
         }
+
+        public bool IsDuplicateCountryName(int countryId, string countryName)
+        {
+            var country =  _countryContext.Countries.Where(c => c.Name.Trim().ToUpper() == countryName.Trim().ToUpper() && c.Id != countryId).FirstOrDefault();
+
+            return country == null ? true : false;
+        }
     }
 }

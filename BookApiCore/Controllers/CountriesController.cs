@@ -15,10 +15,12 @@ namespace BookApiCore.Controllers
     public class CountriesController : Controller
     {
         private ICountryRepository _countryRepository;
+        private IAuthorRepository _authorRepository;
 
-        public CountriesController(ICountryRepository countryRepository)
+        public CountriesController(ICountryRepository countryRepository, IAuthorRepository authorRepository)
         {
             _countryRepository = countryRepository;
+            _authorRepository = authorRepository;
         }
 
         // aoi/countries
@@ -83,7 +85,10 @@ namespace BookApiCore.Controllers
         [ProducesResponseType(200, Type = typeof(CountryDto))]
         public IActionResult GetCountryOfAnAuthor(int authorId)
         {
-            // Validate that author exists.
+            if(!_authorRepository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
 
             var country = _countryRepository.GetCountryOfAnAuthor(authorId);
 

@@ -40,5 +40,11 @@ namespace BookApiCore.Services
             return _categoryDbContext.BookCategories.Where(bc => bc.CategoryId == categoryId).Select(bc => bc.Book).OrderBy(b => b.Title).ToList();
         }
 
+        public bool IsDuplicateCategoryName(int categoryId, string categoryName)
+        {
+            var category = _categoryDbContext.Categories.Where(c => c.Name.Trim().ToUpper() == categoryName.Trim().ToUpper() && c.Id != categoryId).FirstOrDefault();
+
+            return category == null ? true : false;
+        }
     }
 }

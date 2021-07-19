@@ -14,10 +14,12 @@ namespace BookApiCore.Controllers
     public class AuthorsController : Controller
     {
         private IAuthorRepository _authorRepository;
+        private IBookRepository _bookRepository;
 
-        public AuthorsController(IAuthorRepository authorRepository)
+        public AuthorsController(IAuthorRepository authorRepository, IBookRepository bookRepository)
         {
             _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
         }
 
         [HttpGet]
@@ -113,7 +115,10 @@ namespace BookApiCore.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<AuthorDto>))]
         public IActionResult GetAuthorsOfABook(int bookId)
         {
-            // TODO - if book exists
+            if(!_bookRepository.BookExists(bookId))
+            {
+                return NotFound();
+            }
 
             var authors = _authorRepository.GetAuthorsOfABook(bookId);
 
