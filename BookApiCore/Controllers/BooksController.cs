@@ -65,7 +65,7 @@ namespace BookApiCore.Controllers
                 return BadRequest(ModelState);
             }
 
-            var booksDto = new BookDto()
+            var bookDto = new BookDto()
             {
                 Id = book.Id,
                 Isbn = book.Isbn,
@@ -73,7 +73,7 @@ namespace BookApiCore.Controllers
                 DatePublished = book.DatePublished
             };
 
-            return Ok(booksDto);
+            return Ok(bookDto);
         }
 
         [HttpGet("Isbn/{bookIsbn}")]
@@ -94,7 +94,7 @@ namespace BookApiCore.Controllers
                 return BadRequest(ModelState);
             }
 
-            var booksDto = new BookDto()
+            var bookDto = new BookDto()
             {
                 Id = book.Id,
                 Isbn = book.Isbn,
@@ -102,7 +102,7 @@ namespace BookApiCore.Controllers
                 DatePublished = book.DatePublished
             };
 
-            return Ok(booksDto);
+            return Ok(bookDto);
         }
 
         [HttpGet("{bookId}/rating")]

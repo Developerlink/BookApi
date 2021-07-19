@@ -44,7 +44,7 @@ namespace BookApiCore.Services
         {
             var category = _categoryDbContext.Categories.Where(c => c.Name.Trim().ToUpper() == categoryName.Trim().ToUpper() && c.Id != categoryId).FirstOrDefault();
 
-            return category == null ? true : false;
+            return category == null ? false : true;
         }
     }
 }
