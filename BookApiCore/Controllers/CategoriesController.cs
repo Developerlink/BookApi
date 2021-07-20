@@ -13,8 +13,8 @@ namespace BookApiCore.Controllers
     [ApiController]
     public class CategoriesController : Controller
     {
-        private ICategoryRepository _categoryRepository;
-        private IBookRepository _bookRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IBookRepository _bookRepository;
 
         public CategoriesController(ICategoryRepository categoryRepository, IBookRepository bookRepository)
         {
@@ -49,7 +49,7 @@ namespace BookApiCore.Controllers
         }
 
         // api/categories/categoryId
-        [HttpGet("{categoryId}")]
+        [HttpGet("{categoryId}", Name = "GetCategory")]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(200, Type = typeof(CategoryDto))]
@@ -142,23 +142,121 @@ namespace BookApiCore.Controllers
             return Ok(booksDto);
         }
 
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(Category))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
+        public IActionResult CreateCountry([FromBody]Category categoryToCreate)
+        {
+            if (categoryToCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var category = _categoryRepository.GetCategories().
+                Where(c => c.Name.Trim().ToUpper() == categoryToCreate.Name.Trim().ToUpper()).FirstOrDefault();
 
+            if (category != null)
+            {
+                ModelState.AddModelError("", $"Category {categoryToCreate.Name} already exists");
+                return StatusCode(422, ModelState);
+            }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            if (!_categoryRepository.CreateCategory(categoryToCreate))
+            {
+                ModelState.AddModelError("", $"Something went wrong saving {categoryToCreate.Name}");
+                return StatusCode(500, ModelState);
+            }
 
+            // If we get to this point then it was added to the db and therefore has an id. 
+            // It is important that this argument 'reviewId' matches in spelling and casing with the argument in the HttpGet with same route! 
+            return CreatedAtRoute("GetCategory", new { categoryId = categoryToCreate.Id }, categoryToCreate);
+        }
 
+        [HttpPut("{categoryId}")]
+        [ProducesResponseType(204)] // No content.
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
+        public IActionResult UpdateCountry(int categoryId, [FromBody]Category categoryToUpdate)
+        {
+            if (categoryToUpdate == null)
+            {
+                return BadRequest(ModelState);
+            }
 
+            if (categoryId != categoryToUpdate.Id)
+            {
+                return BadRequest(ModelState);
+            }
 
+            if (!_categoryRepository.CategoryExists(categoryId))
+            {
+                return NotFound();
+            }
 
+            if (_categoryRepository.IsDuplicateCategoryName(categoryId, categoryToUpdate.Name))
+            {
+                ModelState.AddModelError("", $"Category {categoryToUpdate.Name} already exists");
+                return StatusCode(422, ModelState);
+            }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            if (!_categoryRepository.UpdateCategory(categoryToUpdate))
+            {
+                ModelState.AddModelError("", $"Something went wrong updating {categoryToUpdate.Name}");
+                return StatusCode(500, ModelState);
+            }
 
+            // Usually nothing is returned when updating. 
+            return NoContent();
+        }
 
+        [HttpDelete("{categoryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        [ProducesResponseType(500)]
+        public IActionResult DeleteCountry(int categoryId)
+        {
+            if (!_categoryRepository.CategoryExists(categoryId))
+            {
+                return NotFound();
+            }
 
+            var categoryToDelete = _categoryRepository.GetCategory(categoryId);
 
+            // Check if any book is associated with this category.
+            if (_categoryRepository.GetBooksForACategory(categoryId).Count > 0)
+            {
+                ModelState.AddModelError("", $"Category {categoryToDelete.Name} cannot be deleted because it is used by at least one book");
+                return StatusCode(409, ModelState);
+            }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            if (!_categoryRepository.DeleteCategory(categoryToDelete))
+            {
+                ModelState.AddModelError("", $"Something went wrong deleting {categoryToDelete.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
 
 
     }

@@ -15,5 +15,10 @@ namespace BookApiCore.Services
         Book GetBook(int bookId);
         Book GetBook(string bookIsbn);
         decimal GetBookRating(int bookId);
+
+        bool CreateBook(List<int> authorIds, List<int> categoryIds, Book book);
+        bool UpdateBook(List<int> authorIds, List<int> categoryIds, Book book);
+        bool DeleteBook(Book book);
+        bool Save();
     }
 }

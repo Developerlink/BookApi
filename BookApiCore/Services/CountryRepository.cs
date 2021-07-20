@@ -8,7 +8,7 @@ namespace BookApiCore.Services
 {
     public class CountryRepository : ICountryRepository
     {
-        private BookDbContext _countryContext;
+        private readonly BookDbContext _countryContext;
 
         public CountryRepository(BookDbContext countryContext)
         {
@@ -58,14 +58,13 @@ namespace BookApiCore.Services
         {
             var country =  _countryContext.Countries.Where(c => c.Name.Trim().ToUpper() == countryName.Trim().ToUpper() && c.Id != countryId).FirstOrDefault();
 
-            return country == null ? false : true;
+            return country != null;
         }
 
         public bool Save()
         {
             var rowsChanged = _countryContext.SaveChanges();
-
-            return rowsChanged >= 0 ? true : false;
+            return rowsChanged >= 0;
         }
 
         public bool UpdateCountry(Country country)

@@ -15,6 +15,18 @@ namespace BookApiCore.Services
             _reviewerDbContext = reviewerDbContext;
         }
 
+        public bool CreateReviewer(Reviewer reviewer)
+        {
+            _reviewerDbContext.Add(reviewer);
+            return Save();
+        }
+
+        public bool DeleteReviewer(Reviewer reviewer)
+        {             
+            _reviewerDbContext.Remove(reviewer);
+            return Save();
+        }
+
         public Reviewer GetReviewer(int reviewerId)
         {
             return _reviewerDbContext.Reviewers.Where(r => r.Id == reviewerId).FirstOrDefault();
@@ -40,6 +52,18 @@ namespace BookApiCore.Services
         public bool ReviewerExists(int reviewerId)
         {
             return _reviewerDbContext.Reviewers.Any(r => r.Id == reviewerId);
+        }
+
+        public bool Save()
+        {
+            var rowsChanged = _reviewerDbContext.SaveChanges();
+            return rowsChanged >= 0;
+        }
+
+        public bool UpdateReviewer(Reviewer reviewer)
+        {
+            _reviewerDbContext.Update(reviewer);
+            return Save();
         }
     }
 }

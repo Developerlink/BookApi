@@ -8,7 +8,7 @@ namespace BookApiCore.Services
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private BookDbContext _categoryDbContext;
+        private readonly BookDbContext _categoryDbContext;
 
         public CategoryRepository(BookDbContext categoryDbContext)
         {
@@ -44,7 +44,31 @@ namespace BookApiCore.Services
         {
             var category = _categoryDbContext.Categories.Where(c => c.Name.Trim().ToUpper() == categoryName.Trim().ToUpper() && c.Id != categoryId).FirstOrDefault();
 
-            return category == null ? false : true;
+            return category != null;
+        }
+
+        public bool CreateCategory(Category category)
+        {
+            _categoryDbContext.AddAsync(category);
+            return Save();
+        }
+
+        public bool UpdateCategory(Category category)
+        {
+            _categoryDbContext.Update(category);
+            return Save();
+        }
+
+        public bool DeleteCategory(Category category)
+        {
+            _categoryDbContext.Remove(category);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var rowsChanged = _categoryDbContext.SaveChanges();
+            return rowsChanged >= 0;
         }
     }
 }

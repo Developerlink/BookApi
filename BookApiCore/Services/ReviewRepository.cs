@@ -8,7 +8,7 @@ namespace BookApiCore.Services
 {
     public class ReviewRepository : IReviewRepository
     {
-        private BookDbContext _bookDbContext;
+        private readonly BookDbContext _bookDbContext;
 
         public ReviewRepository(BookDbContext bookDbContext)
         {
@@ -37,6 +37,37 @@ namespace BookApiCore.Services
         public bool ReviewExists(int reviewId)
         {
             return _bookDbContext.Reviews.Any(r => r.Id == reviewId);
+        }
+
+        public bool CreateReview(Review review)
+        {
+            //var reviewToUpdate = _bookDbContext.Reviews.FirstOrDefault(r => r.Id == review.Id);
+            _bookDbContext.Reviews.Add(review);
+            return Save();
+        }
+
+        public bool UpdateReview(Review review)
+        {
+            _bookDbContext.Update(review);
+            return Save();
+        }
+
+        public bool DeleteReview(Review review)
+        {
+            _bookDbContext.Remove(review);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var rowsChanged = _bookDbContext.SaveChanges();
+            return rowsChanged >= 0;
+        }
+
+        public bool DeleteReviews(ICollection<Review> reviews)
+        {
+            _bookDbContext.RemoveRange(reviews); 
+            return Save();
         }
     }
 }

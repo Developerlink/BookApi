@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace BookApiCore
 {
@@ -29,6 +30,7 @@ namespace BookApiCore
             //services.AddMvc();
             //MvcOptions.EnableEndpointRouting = false;
             services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             var connectionString = Configuration["connectionStrings:bookDbConnectionString"];
             services.AddDbContext<BookDbContext>(cnn => cnn.UseSqlServer(connectionString));

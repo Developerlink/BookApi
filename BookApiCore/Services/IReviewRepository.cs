@@ -13,5 +13,11 @@ namespace BookApiCore.Services
         Review GetReview(int reviewId);
         ICollection<Review> GetReviewsOfABook(int bookId);
         Book GetBookOfAReview(int reviewId);
+
+        bool CreateReview(Review review);
+        bool UpdateReview(Review review);
+        bool DeleteReview(Review review);
+        bool DeleteReviews(ICollection<Review> reviews);
+        bool Save();
     }
 }
